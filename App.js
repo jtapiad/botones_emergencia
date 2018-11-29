@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import {ScrollView, ImageBackground, Button, Text, Image, TouchableOpacity, StyleSheet, View} from 'react-native';
+import {ScrollView,TextInput, ImageBackground, Button, Text, Image, TouchableOpacity, StyleSheet, View} from 'react-native';
 import Communications from 'react-native-communications';
 import { createStackNavigator, createAppContainer } from "react-navigation";
-
+window.navigator.userAgent = 'react-native';
+import io from 'socket.io-client';
 
 class HomeScreen extends Component {
   static navigationOptions = {
@@ -65,11 +66,30 @@ class DetailsScreen extends Component {
   static navigationOptions = {
     title: 'Details',
   };
+
+  constructor(){
+    super();
+    this.state = { text: '', mensajes:[] };
+   
+  }
   render() {
+    var socket = io('http://localhost:3000',{jsonp:false}), mensajes = [];
+
+    socket.on("recibir",(mensaje)=>{
+      this.state.mensajes.push(mensaje);
+      this.forceUpdate();
+    });
+    const {mensajes} = this.state.mensajes
     return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Text>Details Screen</Text>
-      </View>
+          <View>
+             <ScrollView>
+               {this.state.mensajes.map(info => <Text style={{padding: 10, fontSize: 12}}>{info}</Text>)}
+             </ScrollView>
+             <View style={styles.enviar}>
+              <TextInput placeholder="Escribe tu mensaje..." onChangeText={(text) => this.setState({text})}/>
+                <Button title="Enviar" onPress={()=>{socket.emit("send",this.state.text)}}/>
+              </View>
+					</View>
     );
   }
 }
@@ -104,6 +124,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent:'space-evenly',
+  },
+  enviar:{
+        flexDirection: 'row',
+        flexWrap: 'wrap',
   },
   bkg:{
     width: '100%', height: '100%',

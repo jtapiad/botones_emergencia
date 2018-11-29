@@ -7,11 +7,14 @@
     "test": "jest"
   },
   "dependencies": {
+    "express": "^4.15.2",
     "react": "16.6.1",
     "react-native": "0.57.5",
     "react-native-communications": "^2.2.1",
     "react-native-gesture-handler": "^1.0.10",
-    "react-navigation": "^3.0.2"
+    "react-navigation": "^3.0.2",
+    "socket.io": "^2.1.1",
+    "socket.io-client": "^2.1.1"
   },
   "devDependencies": {
     "babel-jest": "23.6.0",
